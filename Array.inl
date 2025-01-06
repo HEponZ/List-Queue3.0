@@ -28,17 +28,18 @@ void Array<T>::RemoveAll()
 }
 
 template<class T>
-void Array<T>::SetAt(int index, T value) noexcept
+void Array<T>::SetAt(int index, T value) 
 {
-	if (index < mas.size())
+	if (index > mas.size() || index < 0)
 	{
-		//—оздание итератора указывающего на начало листа
-		auto pos = mas.begin();
-		//advance - функци€ котора€ замене€ет += к итератору, 
-		// т.к. лист не поддерживает +=
-		advance(pos, index);
-		*pos = value;
+		throw out_of_range("“акого индекса не существует\n");
 	}
+	//—оздание итератора указывающего на начало листа
+	auto pos = mas.begin();
+	//advance - функци€ котора€ замене€ет += к итератору, 
+	// т.к. лист не поддерживает +=
+	advance(pos, index);
+	*pos = value;
 }
 
 template<class T>
@@ -52,6 +53,10 @@ void Array<T>::Append(const Array<T>& mas2) noexcept
 template<class T>
 Array<T>& Array<T>::operator=(const Array<T>& mas2) noexcept
 {
+	if (this == &mas2)
+	{
+		return *this;
+	}
 	RemoveAll();
 	mas.insert(mas.begin(), mas2.mas.begin(), mas2.mas.end());
 
@@ -59,7 +64,7 @@ Array<T>& Array<T>::operator=(const Array<T>& mas2) noexcept
 }
 
 template<class T>
-T* Array<T>::GetData() noexcept
+T* const Array<T>::GetData() noexcept
 {
 	T* mas_data = new T[mas.size()];
 	size_t i = 0;
@@ -73,16 +78,35 @@ T* Array<T>::GetData() noexcept
 }
 
 template<class T>
-void Array<T>::InsertAt(int index, T value) noexcept
+T Array<T>::GetAt(int index)
 {
+	//«десь творитс€ что-то страшное, но это единственное что работает
+	// ак € до этого дошел, да просто, € написал this. и вылес список методов которые можно 
+	//выбрать среди них была перегрузка [], € решил посмотреть что из этого выйдет,
+	//нажал на неЄ и получилось this->operator[], дописал к нему параметры и вот эта штука
+	//заработала
+	return this->operator[](index);
+}
+
+template<class T>
+void Array<T>::InsertAt(int index, T value) 
+{
+	if (index > mas.size() || index < 0)
+	{
+		throw out_of_range("“акого индекса не существует\n");
+	}
 	auto pos = mas.begin();
 	advance(pos, index);
 	mas.insert(pos, value);
 }
 
 template<class T>
-void Array<T>::RemoveAt(int index) noexcept
+void Array<T>::RemoveAt(int index) 
 {
+	if (index > mas.size() || index < 0)
+	{
+		throw out_of_range("“акого индекса не существует\n");
+	}
 	auto pos = mas.begin();
 	advance(pos, index);
 	//ћетод erase() удал€ет элементы из диапазона,
@@ -100,7 +124,7 @@ void Array<T>::FreeExtra() noexcept
 }
 
 template<class T>
-Array<T> Array<T>::operator[] (int index) const noexcept
+T Array<T>::operator[] (int index) const noexcept
 {
 	if (index < 0 || index > mas.size())
 	{
@@ -113,7 +137,7 @@ Array<T> Array<T>::operator[] (int index) const noexcept
 }
 
 template<class T>
-Array<T> Array<T>::operator[] (int index) noexcept
+T Array<T>::operator[] (int index) noexcept
 {
 	if (index < 0 || index > mas.size())
 	{

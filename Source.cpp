@@ -67,8 +67,7 @@ int main()
 			case GET_INDEX:
 				cout << "¬ведите индекс: ";
 				cin >> index;
-				mas_data = arr.GetAt(index).GetData();
-				cout << *mas_data << "\n";
+				cout << arr.GetAt(index);
 				break;
 			case SET_INDEX:
 				cout << "¬ведите индекс: ";
