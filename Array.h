@@ -10,24 +10,24 @@ class Array
 {
 private:
 	list<T> mas;
-	int grow_size;
+	int last_index;
 public:
 	Array()noexcept : Array{ list<T>(), -1 } {};
-	Array(list<T> mas_S, int grow_size_S) noexcept : mas{ mas_S }, grow_size{ grow_size_S } {};
+	Array(list<T> mas_S, int grow_size_S) noexcept : mas{ mas_S }, last_index{ grow_size_S } {};
 
 	Array(Array&& arr) noexcept : mas{ arr.mas } { arr.mas.clear(); }
 	Array(const Array& arr) noexcept : mas{ arr.mas } {};
 
 	int GetSize() const noexcept { return mas.size(); }
-	int GetUpperBound() const noexcept { return grow_size; }
+	int GetUpperBound() const noexcept { return last_index; }
 	void SetSize(int size, int grow = 1);
 	bool IsEmpty() const noexcept { return mas.empty(); }
 	void RemoveAll();
-	T GetAt(int index);
+	T GetAt(int index) { return (*this)[index]; }
 	void SetAt(int index, T value);
 	void Add(T value)noexcept 
 	{ 
-		grow_size++;
+		last_index++;
 		mas.push_back(value);
 	}
 	void Append(const Array<T>& mas2)noexcept;

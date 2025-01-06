@@ -9,11 +9,11 @@ void Array<T>::SetSize(int size, int grow)
 	}
 	if (mas.size() < size)
 	{
-		mas.resize(size + grow);
+		mas.resize(mas.size() + grow);
 	}
 	else if (mas.size() > size)
 	{
-		mas.resize(size - grow);
+		mas.resize(mas.size() - grow);
 	}
 }
 
@@ -24,6 +24,7 @@ void Array<T>::RemoveAll()
 	{
 		throw out_of_range("Удалять нечего. Список пуст\n");
 	}
+	last_index = -1;
 	mas.clear();
 }
 
@@ -48,6 +49,7 @@ void Array<T>::Append(const Array<T>& mas2) noexcept
 	//Метод insert() вставляет начиная с позиции, на которую указывает итератор pos,
 	//элементы из другого контейнера из диапазона между итераторами begin и end.
 	mas.insert(mas.end(), mas2.mas.begin(), mas2.mas.end());
+	last_index += mas2.last_index;
 }
 
 template<class T>
@@ -58,6 +60,7 @@ Array<T>& Array<T>::operator=(const Array<T>& mas2) noexcept
 		return *this;
 	}
 	RemoveAll();
+	last_index = mas2.last_index;
 	mas.insert(mas.begin(), mas2.mas.begin(), mas2.mas.end());
 
 	return *this;
@@ -78,17 +81,6 @@ T* const Array<T>::GetData() noexcept
 }
 
 template<class T>
-T Array<T>::GetAt(int index)
-{
-	//Здесь творится что-то страшное, но это единственное что работает
-	//Как я до этого дошел, да просто, я написал this. и вылес список методов которые можно 
-	//выбрать среди них была перегрузка [], я решил посмотреть что из этого выйдет,
-	//нажал на неё и получилось this->operator[], дописал к нему параметры и вот эта штука
-	//заработала
-	return this->operator[](index);
-}
-
-template<class T>
 void Array<T>::InsertAt(int index, T value) 
 {
 	if (index > mas.size() || index < 0)
@@ -98,6 +90,7 @@ void Array<T>::InsertAt(int index, T value)
 	auto pos = mas.begin();
 	advance(pos, index);
 	mas.insert(pos, value);
+	last_index++;
 }
 
 template<class T>
@@ -112,6 +105,7 @@ void Array<T>::RemoveAt(int index)
 	//Метод erase() удаляет элементы из диапазона,
 	//на начало и конец которого указывают итераторы begin и end
 	mas.erase(pos);
+	last_index--;
 }
 
 template<class T>
